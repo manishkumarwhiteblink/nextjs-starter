@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axiosInstance from '@/lib/axios';
 import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 interface AuthState {
   user: User | null;
@@ -30,6 +30,7 @@ interface LoginCredentials {
 
 const initialState: AuthState = {
   user: null,
+  // Initially, we check if a token exists. (A further expiry check happens on rehydrate.)
   isAuthenticated: !!Cookies.get('auth_token'),
   loading: false,
   error: null,
@@ -48,7 +49,7 @@ export const login = createAsyncThunk(
 );
 
 export const logout = createAsyncThunk('auth/logout', async () => {
-  await axiosInstance.post('/logout');
+  // Optionally, call your API endpoint to logout.
   Cookies.remove('auth_token');
 });
 
@@ -82,6 +83,29 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Handle rehydration: check if the JWT is expired, and if so, clear the auth state.
+    builder.addCase('persist/REHYDRATE', (state, action) => {
+      const token = Cookies.get('auth_token');
+      console.log(action)
+      if (token) {
+        try {
+          // Decode the token (assuming it has an `exp` field in seconds)
+          const { exp } = jwtDecode<{ exp: number }>(token);
+          if (Date.now() >= exp * 1000) {
+            // Token is expired; remove it and reset state
+            Cookies.remove('auth_token');
+            return { ...initialState };
+          }
+        } catch (error) {
+          // If token is invalid, also reset state
+          console.log(error)
+          Cookies.remove('auth_token');
+          return { ...initialState };
+        }
+      }
+      return state;
+    });
+
     builder
       .addCase(login.pending, (state) => {
         state.loading = true;
