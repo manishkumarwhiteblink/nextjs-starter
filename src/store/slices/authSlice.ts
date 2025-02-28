@@ -12,8 +12,8 @@ interface AuthState {
 
 interface User {
   id: string;
-  email: string;
-  name: string;
+  email: string | null | undefined;
+  name: string | null | undefined;
   roles: string[];
   firstName: string;
   lastName: string;

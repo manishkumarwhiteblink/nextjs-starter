@@ -151,8 +151,8 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useSelector((state: RootState) => state.auth);
   const userData = {
-    email: user?.email,
-    name: `${user?.firstName} ${user?.lastName}`,
+    email: user?.email || '',
+    name: `${user?.firstName} ${user?.lastName}` || '',
   };
   console.log(user);
  
