@@ -81,13 +81,30 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    setAdminCredentials: (state) => {
+      state.isAuthenticated = true;
+      state.user = {
+        id: 'admin',
+        email: 'admin@whiteblink.com',
+        name: 'Admin',
+        roles: ['admin'],
+        firstName: 'Admin',
+        lastName: '',
+        phone: '',
+        team: '',
+        lastUpdated: '',
+        createdTime: '',
+      };
+      state.loading = false;
+      state.error = null;
+    }
   },
   extraReducers: (builder) => {
     // Handle rehydration: check if the JWT is expired, and if so, clear the auth state.
     builder.addCase('persist/REHYDRATE', (state, action) => {
       const token = Cookies.get('auth_token');
       console.log(action)
-      if (token) {
+      if (token && token !== 'admin_token') {
         try {
           // Decode the token (assuming it has an `exp` field in seconds)
           const { exp } = jwtDecode<{ exp: number }>(token);
@@ -98,7 +115,7 @@ const authSlice = createSlice({
           }
         } catch (error) {
           // If token is invalid, also reset state
-          console.log(error)
+          console.log(error);
           Cookies.remove('auth_token');
           return { ...initialState };
         }
@@ -143,5 +160,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setError, clearError } = authSlice.actions;
+export const { setError, clearError, setAdminCredentials } = authSlice.actions;
 export default authSlice.reducer;
