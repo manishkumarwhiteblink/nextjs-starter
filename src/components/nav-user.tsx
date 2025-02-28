@@ -34,8 +34,8 @@ export function NavUser({
   user,
 }: {
   user: {
-    name: string;
-    email: string;
+    name: string | null | undefined;
+    email: string | null | undefined;
   };
 }) {
   const { isMobile } = useSidebar();
@@ -57,8 +57,8 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={`https://ui-avatars.com/api/?name=${user.name}`}
-                  alt={user.name}
+                  src={`https://ui-avatars.com/api/?name=${user?.name}`}
+                  alt={`${user?.name}`}
                 />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
@@ -80,7 +80,7 @@ export function NavUser({
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
                     src={`https://ui-avatars.com/api/?name=${user.name}`}
-                    alt={user.name}
+                    alt={`${user?.name}`}
                   />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
