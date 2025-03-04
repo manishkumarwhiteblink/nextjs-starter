@@ -65,7 +65,7 @@ export default function Demo() {
                 />
                 <AvatarFallback>AK</AvatarFallback>
               </Avatar>
-              <div className="text-sm font-medium">Alicia Koch</div>
+              <div className="text-sm font-medium">Admin </div>
             </div>
             <nav className="ml-8 flex items-center space-x-4">
               <Button variant="ghost" className="text-sm font-medium">
